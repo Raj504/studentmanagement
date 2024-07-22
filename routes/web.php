@@ -36,9 +36,16 @@ Route::middleware('auth')->group(function () {
     route::resource('/courses', CourseController::class);    
     route::resource('/batches', BatchController::class);    
     route::resource('/enrollments', EnrollmentController::class); 
-    route::resource('/payments', PaymentController::class);    
+    Route::any('/payments/stripe', [PaymentController::class, 'stripeTest']);
+
+    route::resource('/payments', PaymentController::class,);    
    
     Route::get('report/report1/{pid}', [ReportController::class, 'report1']);
+
+    Route::controller(PaymentController::class)->group(function(){
+        Route::get('stripe', 'stripe');
+        Route::post('stripe', 'stripePost')->name('stripe.post');
+    });
 
 
 

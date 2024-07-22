@@ -6,6 +6,10 @@ use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Payment;
+use Stripe;
+//use Illuminate\Support\Facades\Session;
+use Session;
+
 class PaymentController extends Controller
 {
     /**
@@ -41,8 +45,9 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Payment $id)
     {
+        // dd(23432 , $id);
         $payments = Payment::find($id);
         return view("payments.show")->with('payments', $payments);
     }
@@ -76,4 +81,34 @@ class PaymentController extends Controller
         Payment::destroy($id);
         return redirect('payments')->with('flash_message', 'payment deleted !');
     }
+
+
+    public function stripe()
+    {
+        return view('payments.stripe');
+    }
+
+    public function stripeTest() {
+        return view('payments.stripe');
+    }
+
+    public function stripePost(Request $request)
+    {
+        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+    
+        Stripe\Charge::create ([
+                "amount" => 100 * 100,
+                "currency" => "usd",
+                "source" => $request->stripeToken,
+                "description" => "Test payment from itsolutionstuff.com." 
+        ]);
+      
+        Session::flash('success', 'Payment successful!');
+              
+        return back();
+    }
+    
 }
+
+
+// payments/{stripe}
