@@ -7,6 +7,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use App\Models\Enrollment;
 use Illuminate\View\View;
+use App\Models\Batch;
+use App\Models\Student;
+use Carbon\Carbon;
+
 class EnrollmentController extends Controller
 {
     /**
@@ -14,8 +18,9 @@ class EnrollmentController extends Controller
      */
     public function index()
     {
-        $enrollments = Enrollment::all();
-        return view ('enrollments.index')->with('enrollments', $enrollments);
+        $enrollments = Enrollment::with('batch', 'student')->get();
+        // dd($enrollments);
+                return view('enrollments.index', compact('enrollments'));
     }
 
     /**
@@ -23,7 +28,10 @@ class EnrollmentController extends Controller
      */
     public function create()
     {
-        return view('enrollments.create');
+        $batches = Batch::pluck('name', 'id'); 
+        $students = Student::pluck('name', 'id'); 
+
+        return view('enrollments.create', compact('batches', 'students'));
 
     }
 
@@ -33,6 +41,8 @@ class EnrollmentController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+        $input['join_date'] = Carbon::createFromFormat('d-m-Y', $request->join_date)->format('Y-m-d');
+
         Enrollment::create($input);
         return redirect('enrollments')->with('flash_message', 'enrollment added!');
     }
@@ -51,10 +61,12 @@ class EnrollmentController extends Controller
      */
     public function edit(string $id)
     {
-        $enrollments = Enrollment::find($id);
-        return view("enrollments.edit")->with('enrollments', $enrollments);
+      
+        $enrollment = Enrollment::findOrFail($id);
+        $batches = Batch::pluck('name', 'id'); 
+        $students = Student::pluck('name', 'id'); 
+        return view('enrollments.edit', compact('enrollment', 'batches', 'students'));
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -62,8 +74,10 @@ class EnrollmentController extends Controller
     {
         $enrollments = Enrollment::find($id);
         $input = $request->all();
+        $input['join_date'] = Carbon::createFromFormat('d-m-Y', $request->join_date)->format('Y-m-d');
+
         $enrollments->update($input);
-        return redirect('enrollments')->with('flash_message', 'student Enrolled!');  
+        return view('enrollments')->with('flash_message', 'student Enrolled!');  
     }
 
     /**

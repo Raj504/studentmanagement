@@ -11,6 +11,8 @@ use App\Http\Controllers\BatchController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\StripeController;
+
 
 
 
@@ -31,22 +33,32 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/student-management', [StudentManagementController::class, 'index'])->name('student.management');
-    route::resource('/students', StudentController::class);    
+    Route::resource('students', StudentController::class);
+    // Route::post('/students', [StudentController::class]);
+  
     route::resource('/teachers', TeacherController::class);    
     route::resource('/courses', CourseController::class);    
     route::resource('/batches', BatchController::class);    
     route::resource('/enrollments', EnrollmentController::class); 
-    Route::any('/payments/stripe', [PaymentController::class, 'stripeTest']);
 
     route::resource('/payments', PaymentController::class,);    
    
     Route::get('report/report1/{pid}', [ReportController::class, 'report1']);
+    // Route::get('test-stripe', function () {
+    //     return 'Stripe Test';
+    // });
 
-    Route::controller(PaymentController::class)->group(function(){
+    // Route::get('test-route', function () {
+    //     return 'This is a test route';
+    // });
+    Route::controller(StripeController::class)->group(function(){
         Route::get('stripe', 'stripe');
         Route::post('stripe', 'stripePost')->name('stripe.post');
     });
+    
+    Route::get('/stripe/payment', [StripeController::class, 'showPaymentForm'])->name('stripe.payment');
 
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payment.index');
 
 
 

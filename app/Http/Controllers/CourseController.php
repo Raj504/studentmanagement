@@ -32,10 +32,13 @@ class CourseController extends Controller
      */
     public function store(Request $request):RedirectResponse
     {
-        $input = $request->all();
-        Course::create($input);
-        return redirect('Courses')->with('flash_message', 'courses added!');
-
+        $course = new Course();
+        $course->name = $request->input('name');
+        $course->syllabus = $request->input('syllabus');
+        $course->duration = $request->input('duration');
+        $course->save();
+    
+        return redirect()->route('courses.index')->with('success', 'Course created successfully!');
     }
 
     /**

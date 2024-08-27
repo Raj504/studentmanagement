@@ -5,103 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Student Management</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.css">
     <style>
         body {
             margin: 0;
-            background: #000;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-        @keyframes w_line {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-        .backend_txt {
-            position: absolute !important;
-            left: 0 !important;
-            margin: 2px 0 !important;
-            top: 0 !important;
-            text-align: center;
-            z-index: -1;
-            background: #000;
-        }
-        .backend_txt span {
-            font-family: 'Source Sans Pro', sans-serif;
-            position: relative !important;
-            color: rgba(255, 255, 255, .2) !important;
-        }
-        h2 {
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 100;
-            color: #fff;
-            text-align: center;
-        }
-        .d_cont {
-            position: relative;
-            padding-top: 4px;
-            left: 0;
-            width: 100%;
-            min-height: 80px;
-        }
-        .d_txt, .backend_txt {
-            position: relative;
-            left: 0;
-            width: 100%;
-            max-width: 100%;
-            margin: 5px auto;
-            height: 100px;
-        }
-        .d_txt span {
+            background: linear-gradient(to right, #070403, #f0b589);
             font-family: 'Source Sans Pro', sans-serif;
             color: #fff;
-            position: absolute;
-            font-size: 38px;
+            overflow: hidden;
         }
-        .w_line {
-            background: #fff;
-            width: 1.5px;
-            height: 70px;
-            display: block;
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .text-wrapper {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .text-wrapper .letter {
+            display: inline-block;
             opacity: 0;
-            position: absolute;
-            left: 10px;
-        }
-        .w_line.active {
-            animation: w_line 0.8s infinite;
+            transform: scale(1.5);
         }
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 25px;
             margin: 10px;
             text-decoration: none;
             color: #fff;
             background-color: #007bff;
-            border: 1px solid #007bff;
-            border-radius: 4px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
+            font-size: 1.1rem;
+            font-weight: bold;
         }
         .btn:hover {
             background-color: #0056b3;
             border-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .btn:active {
+            background-color: #003d7a;
+            border-color: #003d7a;
         }
     </style>
 </head>
 <body>
-    <div class="d_cont">
-        <div class="d_txt">
-            <h2>Welcome to Student Management</h2>
-            <span class="w_line active"></span>
+    <div class="container">
+        <div class="text-wrapper ml2">
+            Welcome to Student Management
         </div>
-        <div class="backend_txt">
-            <span>Backend Text</span>
+        <div>
+            <a href="{{ route('login') }}" class="btn">Login</a>
+            <a href="{{ route('register') }}" class="btn">Register</a>
         </div>
     </div>
-    <div style="text-align: center; margin-top: 50px;">
-        <a href="{{ route('login') }}" class="btn">Login</a>
-        <a href="{{ route('register') }}" class="btn">Register</a>
-    </div>
-    <!-- Include the compiled JavaScript -->
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        // Wrap every letter in a span
+        var textWrapper = document.querySelector('.ml2');
+        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+        anime.timeline({loop: true})
+          .add({
+            targets: '.ml2 .letter',
+            scale: [4,1],
+            opacity: [0,1],
+            translateZ: 0,
+            easing: "easeOutExpo",
+            duration: 950,
+            delay: (el, i) => 70*i
+          }).add({
+            targets: '.ml2',
+            opacity: 0,
+            duration: 1000,
+            easing: "easeOutExpo",
+            delay: 1000
+          });
+    </script>
 </body>
 </html>

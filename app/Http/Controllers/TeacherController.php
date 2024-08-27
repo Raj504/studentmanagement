@@ -56,9 +56,7 @@ class TeacherController extends Controller
         return view("teachers.edit")->with('teachers', $teachers);
     }
 
-    /**
-     * Update 
-     */
+   
     public function update(Request $request, string $id)
     {
         $teacher = Teacher::find($id);
@@ -67,12 +65,14 @@ class TeacherController extends Controller
         return redirect('teachers')->with('flash_message', 'teacher Updated!');  
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id):RedirectResponse
+  
+    public function destroy(string $id): RedirectResponse
     {
-        Teacher::destroy($id);
-        return redirect('teachers')->with('flash_message', 'teacher deleted !');
+      
+        $teacher = Teacher::findOrFail($id);
+       
+        $teacher->delete();
+    
+        return redirect()->route('teachers.index')->with('success', 'Teacher deleted successfully.');
     }
 }

@@ -35,11 +35,19 @@ class StudentController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        
-        $input = $request->all();
-        Student::create($input);
-        
-        return redirect('students')->with('flash_message', 'Student added!');
+        // Validate request data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email_id' => 'required|email|unique:students,email_id', // Ensure unique email
+        ]);
+    
+        // Create a new student record
+        Student::create($validated);
+    
+        // Redirect to the students index with a success message
+        return redirect()->route('students.index')->with('flash_message', 'Student added!');
     }
 
     /**

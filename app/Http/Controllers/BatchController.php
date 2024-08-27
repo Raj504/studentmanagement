@@ -55,8 +55,10 @@ class BatchController extends Controller
      */
     public function edit(string $id): view
     {
-        $batches = Batch::find($id);
-        return view("batches.edit")->with('batches', $batches);
+        $batch = Batch::find($id);
+        $courses = Course::pluck('name', 'id');
+        // dd($courses);
+        return view('batches.edit', compact('batch', 'courses'));
     }
 
     /**
@@ -66,6 +68,10 @@ class BatchController extends Controller
     {
         $batches = Batch::find($id);
         $input = $request->all();
+        if (!empty($input['start_date'])) {
+            $input['start_date'] = \Carbon\Carbon::createFromFormat('d-m-Y', $input['start_date'])->format('Y-m-d');
+        }
+    
         $batches->update($input);
         return redirect('batches')->with('flash_message', 'batch Updated!'); 
     }

@@ -1,21 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Laravel Payment system</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel - Stripe Payment Gateway Integration Example</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: 'Arial', sans-serif;
+        }
+        .credit-card-box {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .panel-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-control {
+            border-radius: 5px;
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            border-radius: 5px;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border-color: #d6e9c6;
+        }
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border-color: #ebccd1;
+        }
+        .has-error .form-control {
+            border-color: #a94442;
+        }
+        .has-error .control-label {
+            color: #a94442;
+        }
+    </style>
 </head>
 <body>
     
 <div class="container">
     
-    <h1>Laravel Payment system</h1>
+    <h1 class="text-center">Laravel - Stripe Payment Gateway Integration</h1>
     
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default credit-card-box">
-                <div class="panel-heading display-table" >
-                        <h3 class="panel-title" >Payment Details</h3>
+                <div class="panel-heading display-table">
+                        <h3 class="panel-title">Payment Details</h3>
                 </div>
                 <div class="panel-body">
     
@@ -38,47 +88,42 @@
     
                         <div class='form-row row'>
                             <div class='col-xs-12 form-group required'>
-                                <label class='control-label'>Name on Card</label> <input
-                                    class='form-control' size='4' type='text'>
+                                <label class='control-label'>Name on Card</label> 
+                                <input class='form-control' size='4' type='text'>
                             </div>
                         </div>
     
                         <div class='form-row row'>
                             <div class='col-xs-12 form-group card required'>
-                                <label class='control-label'>Card Number</label> <input
-                                    autocomplete='off' class='form-control card-number' size='20'
-                                    type='text'>
+                                <label class='control-label'>Card Number</label> 
+                                <input autocomplete='off' class='form-control card-number' size='20' type='text'>
                             </div>
                         </div>
     
                         <div class='form-row row'>
                             <div class='col-xs-12 col-md-4 form-group cvc required'>
-                                <label class='control-label'>CVC</label> <input autocomplete='off'
-                                    class='form-control card-cvc' placeholder='ex. 311' size='4'
-                                    type='text'>
+                                <label class='control-label'>CVC</label> 
+                                <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text'>
                             </div>
                             <div class='col-xs-12 col-md-4 form-group expiration required'>
-                                <label class='control-label'>Expiration Month</label> <input
-                                    class='form-control card-expiry-month' placeholder='MM' size='2'
-                                    type='text'>
+                                <label class='control-label'>Expiration Month</label> 
+                                <input class='form-control card-expiry-month' placeholder='MM' size='2' type='text'>
                             </div>
                             <div class='col-xs-12 col-md-4 form-group expiration required'>
-                                <label class='control-label'>Expiration Year</label> <input
-                                    class='form-control card-expiry-year' placeholder='YYYY' size='4'
-                                    type='text'>
+                                <label class='control-label'>Expiration Year</label> 
+                                <input class='form-control card-expiry-year' placeholder='YYYY' size='4' type='text'>
                             </div>
                         </div>
     
                         <div class='form-row row'>
                             <div class='col-md-12 error form-group hide'>
-                                <div class='alert-danger alert'>Please correct the errors and try
-                                    again.</div>
+                                <div class='alert-danger alert'>Please correct the errors and try again.</div>
                             </div>
                         </div>
     
                         <div class="row">
                             <div class="col-xs-12">
-                                <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now ($100)</button>
+                                <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now (${{ number_format($amount, 2) }})</button>
                             </div>
                         </div>
                             

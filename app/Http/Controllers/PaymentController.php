@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Payment;
 use Stripe;
+use Illuminate\Support\Facades\Session;
+
 //use Illuminate\Support\Facades\Session;
-use Session;
+// use Session;
 
 class PaymentController extends Controller
 {
@@ -45,21 +47,24 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $id)
+    public function show($id)
     {
         // dd(23432 , $id);
-        $payments = Payment::find($id);
-        return view("payments.show")->with('payments', $payments);
+        $payment = Payment::findOrFail($id);
+        
+        return view('payments.show', compact('payment'));    
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        $payments = Payment::findOrFail($id);
+        $payment = Payment::findOrFail($id);
+
         $enrollments = Enrollment::pluck('enroll_no', 'id'); 
-        return view("payments.edit")->with('payments', $enrollments);
+
+    return view('payments.edit', compact('payment', 'enrollments'));
     }
 
     /**
@@ -82,31 +87,8 @@ class PaymentController extends Controller
         return redirect('payments')->with('flash_message', 'payment deleted !');
     }
 
-
-    public function stripe()
-    {
-        return view('payments.stripe');
-    }
-
-    public function stripeTest() {
-        return view('payments.stripe');
-    }
-
-    public function stripePost(Request $request)
-    {
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-    
-        Stripe\Charge::create ([
-                "amount" => 100 * 100,
-                "currency" => "usd",
-                "source" => $request->stripeToken,
-                "description" => "Test payment from itsolutionstuff.com." 
-        ]);
-      
-        Session::flash('success', 'Payment successful!');
-              
-        return back();
-    }
+  
+   
     
 }
 
